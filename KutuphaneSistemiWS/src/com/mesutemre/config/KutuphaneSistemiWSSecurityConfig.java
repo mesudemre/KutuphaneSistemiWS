@@ -29,7 +29,7 @@ public class KutuphaneSistemiWSSecurityConfig extends WebSecurityConfigurerAdapt
 	@Override
 	public void configure(WebSecurity web) throws Exception {
 		web.ignoring().antMatchers("/api/kitap/resim/*","/api/kullanici/kaydet",
-				"/api/parametre/kitapturler","/api/kullanici/resim/*","/api/parametre/ilgialan/resim/*");
+				"/api/parametre/kitapturler","/api/kullanici/userprofil/*","/api/parametre/ilgialan/resim/*");
 		
 	}
 	

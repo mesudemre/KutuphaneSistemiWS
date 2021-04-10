@@ -3,6 +3,7 @@ package com.mesutemre.kullanici.resultgenerator;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
@@ -14,6 +15,15 @@ import com.mesutemre.kullanici.model.KullaniciModel;
  *
  */
 public class KullaniciResultGenerator implements ResultSetExtractor {
+	
+	private Environment env;
+	
+	public KullaniciResultGenerator() {
+	}
+	
+	public KullaniciResultGenerator(Environment env) {
+		this.env = env;
+	}
 
 	@Override
 	public Object extractData(ResultSet rs) throws SQLException,
@@ -26,7 +36,7 @@ public class KullaniciResultGenerator implements ResultSetExtractor {
 		model.setDogumTarihi(rs.getDate("dogumtarihi"));
 		model.setEposta(rs.getString("eposta"));
 		model.setCinsiyet(CinsiyetEnum.getEnumByValue(rs.getString("cinsiyet")));
-		model.setResim(rs.getString("resim"));
+		model.setResim(env.getProperty("kutuphanesistemi.resim.kullanici.contextPath")+"/"+rs.getString("resim"));
 		model.setHaberdarmi(Boolean.valueOf(rs.getString("haberdarmi")));
 		model.setEnabled(Boolean.valueOf(rs.getString("enabled")));
 		

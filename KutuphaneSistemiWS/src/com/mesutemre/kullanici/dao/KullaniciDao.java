@@ -5,6 +5,7 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -31,6 +32,9 @@ public class KullaniciDao implements IKullaniciDao {
 	public void setDataSource(DataSource dataSource) {
 		this.jdbctemplate = new JdbcTemplate(dataSource);
 	}
+	
+	@Autowired
+	private Environment env;
 
 	@Override
 //	@Cacheable(value="kullanicicache",key="#username",unless="#result==null")
@@ -48,7 +52,7 @@ public class KullaniciDao implements IKullaniciDao {
 		
 		List<KullaniciModel> liste = jdbctemplate.query(sql.toString(),
 									new Object[] {username},
-									new KullaniciRowMapper());
+									new KullaniciRowMapper(env));
 		if(liste != null && liste.size()>0){
 			kullanici = liste.get(0);
 			kullanici.setIlgiAlanlari(parametreService.getKullaniciIlgiAlanlari(username));

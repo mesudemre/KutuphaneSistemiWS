@@ -77,12 +77,21 @@ public class KullaniciController {
 		
 		return new ResponseEntity<List<IlgiAlanlariParametreModel>>(liste,HttpStatus.OK);
 	}
-	
-	@RequestMapping(value = "/resim" , method = RequestMethod.GET , produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<KullaniciResim> getKullaniciResim(){
-		KullaniciResim kullaniciResim = kullaniciService.getKullaniciResim();
-		return new ResponseEntity<KullaniciResim>(kullaniciResim,HttpStatus.OK);
+
+	@RequestMapping(value = "/userprofil/{userName}" , method = RequestMethod.GET ,produces = MediaType.IMAGE_JPEG_VALUE)
+	public ResponseEntity<byte[]> getKullaniciProfilResim(@PathVariable(value = "userName") String userName) throws IOException {
+		File file = new File(KutuphaneSistemiUtil.getUploadProfilResmiPath()+userName+"/"+userName+".jpg");
+		InputStream in = null;
+		if(file.exists()) {
+			in = new ByteArrayInputStream(FileUtils.readFileToByteArray(file));
+			in.close();
+			return new ResponseEntity<byte[]>(IOUtils.toByteArray(in),HttpStatus.OK);
+		}
+		file = new File(KutuphaneSistemiUtil.getUploadProfilResmiPath()+"logo_xs.png");
+		in = new ByteArrayInputStream(FileUtils.readFileToByteArray(file));
+		in.close();
 		
+		return new ResponseEntity<byte[]>(IOUtils.toByteArray(in),HttpStatus.NOT_FOUND);
 	}
 	
 	@RequestMapping(value = "/kaydet" , method = RequestMethod.POST , produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -152,22 +161,6 @@ public class KullaniciController {
 		responseStatus = new ResponseStatus("200", "Resim başarıyla yüklendi");
 		
 		return new ResponseEntity<ResponseStatus>(responseStatus,HttpStatus.OK);
-	}
-	
-	@RequestMapping(value = "/resim/{username}" , method = RequestMethod.GET ,produces = MediaType.IMAGE_JPEG_VALUE)
-	public ResponseEntity<byte[]> getKullaniciResim(@PathVariable(value = "username") String username) throws IOException {
-		File file = new File(KutuphaneSistemiUtil.getKutuphaneSistemiPath()+"profilresim/"+username+"/"+username+".jpg");
-		InputStream in = null;
-		if(file.exists()) {
-			in = new ByteArrayInputStream(FileUtils.readFileToByteArray(file));
-			in.close();
-			return new ResponseEntity<byte[]>(IOUtils.toByteArray(in),HttpStatus.OK);
-		}
-		file = new File(KutuphaneSistemiUtil.getKutuphaneSistemiPath()+"not_found_image.png");
-		in = new ByteArrayInputStream(FileUtils.readFileToByteArray(file));
-		in.close();
-		
-		return new ResponseEntity<byte[]>(IOUtils.toByteArray(in),HttpStatus.NOT_FOUND);
 	}
 	
 }

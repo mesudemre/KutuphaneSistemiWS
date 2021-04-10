@@ -58,21 +58,7 @@ public class KitapController {
 		return new ResponseEntity<List<KitapTurIstatistikModel>>(liste,HttpStatus.OK);
 	}
 	
-	@RequestMapping(value = "/resim/{resimId}" , method = RequestMethod.GET ,produces = MediaType.IMAGE_JPEG_VALUE)
-	public ResponseEntity<byte[]> getKitapResim(@PathVariable(value = "resimId") String resimId) throws IOException {
-		File file = new File(KutuphaneSistemiUtil.getKitapPath()+resimId+"/"+resimId+".jpg");
-		InputStream in = null;
-		if(file.exists()) {
-			in = new ByteArrayInputStream(FileUtils.readFileToByteArray(file));
-			in.close();
-			return new ResponseEntity<byte[]>(IOUtils.toByteArray(in),HttpStatus.OK);
-		}
-		file = new File(KutuphaneSistemiUtil.getKutuphaneSistemiPath()+"not_found_image.png");
-		in = new ByteArrayInputStream(FileUtils.readFileToByteArray(file));
-		in.close();
-		
-		return new ResponseEntity<byte[]>(IOUtils.toByteArray(in),HttpStatus.NOT_FOUND);
-	}
+	
 	
 	@RequestMapping(value = "/kaydet" , method = RequestMethod.POST , produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<ResponseStatus> kitapKaydet(@RequestBody KitapModel model){
@@ -134,6 +120,22 @@ public class KitapController {
 	public ResponseEntity<YorumListeModel> getYorumListeByKitapId(@PathVariable("kitapId") String kitapId){
 		YorumListeModel model = kitapService.getYorumListeByKitapId(Integer.parseInt(kitapId));
 		return new ResponseEntity<YorumListeModel>(model,HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/resim/{kitapId}" , method = RequestMethod.GET ,produces = MediaType.IMAGE_JPEG_VALUE)
+	public ResponseEntity<byte[]> getKitapResim(@PathVariable(value = "kitapId") int kitapId) throws IOException {
+		File file = new File(KutuphaneSistemiUtil.getKitapPath()+""+kitapId+"/"+kitapId+".jpg");
+		InputStream in = null;
+		if(file.exists()) {
+			in = new ByteArrayInputStream(FileUtils.readFileToByteArray(file));
+			in.close();
+			return new ResponseEntity<byte[]>(IOUtils.toByteArray(in),HttpStatus.OK);
+		}
+		file = new File(KutuphaneSistemiUtil.getKutuphaneSistemiPath()+"not_found_image.png");
+		in = new ByteArrayInputStream(FileUtils.readFileToByteArray(file));
+		in.close();
+		
+		return new ResponseEntity<byte[]>(IOUtils.toByteArray(in),HttpStatus.NOT_FOUND);
 	}
 	
 }
